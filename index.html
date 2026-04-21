@@ -619,7 +619,12 @@ function renderCal(){
     const ds = dates[d];
     const dt = dparse(ds);
     const h = document.createElement('div');
-    h.className = 'cal-hd' + (isHol(ds)?' hol':'');
+    h.className = 'cal-hd';
+    if(isHol(ds)){
+      const t = THEMES.find(function(x){ return x.id===D.theme; }) || THEMES[0];
+      const acc2 = t.acc2 || t.acc;
+      h.style.color = acc2;
+    }
     h.innerHTML = '<div class="cal-hd-day">'+DAYS[d]+'</div>'
       +'<div class="cal-hd-date'+(ds===todayStr?' today':'')+'">'+dt.getDate()+'</div>';
     grid.appendChild(h);
@@ -634,7 +639,13 @@ function renderCal(){
       const ds = dates[d];
       const aqIds = qIdsFor(ds);
       const cell = document.createElement('div');
-      cell.className = 'cell' + (isHol(ds)?' hol':'');
+      cell.className = 'cell';
+      if(isHol(ds)){
+        const t = THEMES.find(function(x){ return x.id===D.theme; }) || THEMES[0];
+        const acc2 = t.acc2 || t.acc;
+        cell.style.background = hexToRgba(acc2, 0.06);
+        cell.style.borderColor = hexToRgba(acc2, 0.2);
+      }
 
       const chg = D.scheds.find(function(s){ return s.week===wk&&s.origDay===d&&s.origPeriod===p; });
       const mv  = D.scheds.find(function(s){ return s.week===wk&&s.type==='move'&&s.newDay===d&&s.newPeriod===p; });
