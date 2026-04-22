@@ -1278,7 +1278,23 @@ document.addEventListener('DOMContentLoaded', function(){
     _eventId=null; dbSave(); hideModal('m-event'); renderSettings(); renderCal();
   });
 
-  window.addEventListener('resize', renderCal);
+  // スワイプで週切り替え
+  let touchStartX = 0;
+  let touchStartY = 0;
+  const calView = document.getElementById('vcal');
+  calView.addEventListener('touchstart', function(e){
+    touchStartX = e.touches[0].clientX;
+    touchStartY = e.touches[0].clientY;
+  }, {passive:true});
+  calView.addEventListener('touchend', function(e){
+    const dx = e.changedTouches[0].clientX - touchStartX;
+    const dy = e.changedTouches[0].clientY - touchStartY;
+    // 横方向の移動が縦より大きく、50px以上のスワイプのみ反応
+    if(Math.abs(dx) > Math.abs(dy) && Math.abs(dx) > 50){
+      if(dx < 0){ weekOffset++; renderCal(); }
+      else       { weekOffset--; renderCal(); }
+    }
+  }, {passive:true});
 
   // 初期化
   dbLoad();
